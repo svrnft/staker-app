@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>$TAKER</title>
+  <meta name="application-name" content="$TAKER"/>
+  <meta name="description" content="TON dPoS Analytics"/>
+  <meta name="ton-x-extension" content="te6cckEBAwEAKwACAcgCAQAMU1RBS0VSADhodHRwczovL3N0YWtlci50b24uc2hpa3NoYS9l7dEm_g">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="/favicon.png"/>
+
+
+  <meta name="theme-color" content="#000F14"/>
+</head>
+<body class="">
+<!--  <div class="scanline"></div>-->
+  <div id="app" class="term"></div>
+  <style>
+    :root {
+      --space: 8px;
+      --space-x2: calc(var(--space) * 2);
+      --space-05: calc(var(--space) / 2);
+      --space-x4: calc(var(--space) * 4);
+      --space-025: calc(var(--space) / 4);
+      --space-x8: calc(var(--space) * 8);
+      --font-size: 18px;
+
+      --palette-00: #000F14;
+      --palette-01: rgb(211, 215, 207);
+
+      --palette-10: #171421;
+      --palette-11: rgb(94, 92, 100);
+
+      --palette-20: #C01C28;
+      --palette-21: rgb(246, 97, 81);
+      --palette-shadow-from: rgba(246, 97, 81, .5);
+
+      --palette-30: rgb(38, 162, 105);
+      --palette-shadow-to: rgba(38, 162, 105, .3);
+      --palette-31: #33DA7A;
+
+      --palette-40: #A2734C;
+      --palette-41: #E9AD0C;
+
+      --palette-50: #12488B;
+      --palette-51: #2A7BDE;
+
+      --palette-60: #A347BA;
+      --palette-61: #C061CB;
+
+      --palette-70: #2AA1B3;
+      --palette-71: #33C7DE;
+
+      --palette-80: #D0CFCC;
+      --palette-81: #FFFFFF;
+
+      --background-color: var(--palette-00);
+      --font-color: var(--palette-01);
+      --invert-font-color: var(--palette-00);
+      --secondary-color: var(--palette-80);
+      --tertiary-color: var(--palette-11);
+      --primary-color: var(--palette-70);
+      --error-color: var(--palette-20);
+      --progress-bar-background: var(--palette-11);
+      --progress-bar-fill: var(--palette-71);
+      --code-bg-color: var(--palette-11);
+
+      /*--page-width: 80ch;*/
+      --page-width: 100%;
+      --global-space: var(--space);
+      --line-height: 1.2;
+      --global-font-size: var(--font-size);
+      --global-line-height: var(--line-height);
+      --font-stack: "Liberation Mono", SFMono-Regular, Menlo, Monaco, Consolas, "Ubuntu Mono", "Courier New", monospace;
+      --mono-font-stack: var(--font-stack);
+      --input-style: solid;
+      --display-h1-decoration: none;
+    }
+    .logo.terminal-prompt::before {
+      content: unset;
+      display: none;
+    }
+    .logo.terminal-prompt::after {
+      animation: cursor 2s infinite;
+      background: var(--palette-01);
+      width: .5em;
+    }
+    em {
+      font-style: normal;
+    }
+    pre {
+      border: 0;
+      margin: 0;
+      padding: 0;
+      font-family: var(--mono-font-stack);
+    }
+    dfn {
+      font-style: normal;
+    }
+    q::before {
+      content: "";
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 300;
+      font-size: var(--font-size);
+    }
+    .container, .container-fluid {
+      padding: 0;
+    }
+    [data-typeit-id]:before {
+      display: none;
+    }
+  </style>
+  <style>
+
+    @keyframes flicker {
+      0% {
+        opacity: 0.57861;
+      }
+      5% {
+        opacity: 0.64769;
+      }
+      10% {
+        opacity: 0.73604;
+      }
+      15% {
+        opacity: 0.90626;
+      }
+      20% {
+        opacity: 0.68128;
+      }
+      25% {
+        opacity: 0.83891;
+      }
+      30% {
+        opacity: 0.65583;
+      }
+      35% {
+        opacity: 0.67807;
+      }
+      40% {
+        opacity: 0.66559;
+      }
+      45% {
+        opacity: 0.84693;
+      }
+      50% {
+        opacity: 0.96019;
+      }
+      55% {
+        opacity: 0.58594;
+      }
+      60% {
+        opacity: 0.60313;
+      }
+      65% {
+        opacity: 0.71988;
+      }
+      70% {
+        opacity: 0.53455;
+      }
+      75% {
+        opacity: 0.67288;
+      }
+      80% {
+        opacity: 0.71428;
+      }
+      85% {
+        opacity: 0.70419;
+      }
+      90% {
+        opacity: 0.7003;
+      }
+      95% {
+        opacity: 0.66108;
+      }
+      100% {
+        opacity: 0.54387;
+      }
+    }
+    @keyframes textShadow {
+      0% {
+        text-shadow: 0.4389924193300864px 0 1px var(--palette-shadow-from),
+        -0.4389924193300864px 0 1px var(--palette-shadow-to),
+        0 0 1px;
+      }
+      1% {
+        text-shadow: 2.7928974010788217px 0 1px var(--palette-shadow-from),
+        -2.7928974010788217px 0 1px var(--palette-shadow-to),
+        0 0 1px;
+      }
+      2% {
+        text-shadow: 0.02956275843481219px 0 1px var(--palette-shadow-from),
+        -0.02956275843481219px 0 1px var(--palette-shadow-to),
+        0 0 1px;
+      }
+      3% {
+        text-shadow: 0.40218538552878136px 0 1px var(--palette-shadow-from),
+        -0.40218538552878136px 0 1px var(--palette-shadow-to),
+        0 0 1px;
+      }
+      4% {
+        text-shadow: 3.4794037899852017px 0 1px var(--palette-shadow-from),
+        -3.4794037899852017px 0 1px var(--palette-shadow-to),
+        0 0 1px;
+      }
+      5% {
+        text-shadow: 1.6125630401149584px 0 1px var(--palette-shadow-from),
+        -1.6125630401149584px 0 1px var(--palette-shadow-to),
+        0 0 1px;
+      }
+      6% {
+        text-shadow: 0.7015590085143956px 0 1px var(--palette-shadow-from),
+        -0.7015590085143956px 0 1px var(--palette-shadow-to),
+        0 0 1px;
+      }
+      7% {
+        text-shadow: 3.896914047650351px 0 1px var(--palette-shadow-from),
+        -3.896914047650351px 0 1px var(--palette-shadow-to),
+        0 0 1px;
+      }
+      8% {
+        text-shadow: 3.870905614848819px 0 1px var(--palette-shadow-from),
+        -3.870905614848819px 0 1px var(--palette-shadow-to),
+        0 0 1px;
+      }
+      9% {
+        text-shadow: 2.231056963361899px 0 1px var(--palette-shadow-from),
+        -2.231056963361899px 0 1px var(--palette-shadow-to),
+        0 0 1px;
+      }
+      10% {
+        text-shadow: 0.08084290417898504px 0 1px var(--palette-shadow-from),
+        -0.08084290417898504px 0 1px var(--palette-shadow-to),
+        0 0 1px;
+      }
+      11% {
+        text-shadow: 2.3758461067427543px 0 1px var(--palette-shadow-from),
+        -2.3758461067427543px 0 1px var(--palette-shadow-to),
+        0 0 1px;
+      }
+      12% {
+        text-shadow: 2.202193051050636px 0 1px var(--palette-shadow-from),
+        -2.202193051050636px 0 1px var(--palette-shadow-to),
+        0 0 1px;
+      }
+      13% {
+        text-shadow: 2.8638780614874975px 0 1px var(--palette-shadow-from),
+        -2.8638780614874975px 0 1px var(--palette-shadow-to),
+        0 0 1px;
+      }
+      14% {
+        text-shadow: 0.48874025155497314px 0 1px var(--palette-shadow-from),
+        -0.48874025155497314px 0 1px var(--palette-shadow-to),
+        0 0 1px;
+      }
+      15% {
+        text-shadow: none;
+      }
+      /*75% {*/
+      /*  text-shadow: 1.8948491305757957px 0 1px var(--palette-shadow-from),*/
+      /*  -1.8948491305757957px 0 1px var(--palette-shadow-to),*/
+      /*  0 0 1px;*/
+      /*}*/
+      /*80% {*/
+      /*  text-shadow: 0.0833037308038857px 0 1px var(--palette-shadow-from),*/
+      /*  -0.0833037308038857px 0 1px var(--palette-shadow-to),*/
+      /*  0 0 1px;*/
+      /*}*/
+      /*85% {*/
+      /*  text-shadow: 0.09769827255241735px 0 1px var(--palette-shadow-from),*/
+      /*  -0.09769827255241735px 0 1px var(--palette-shadow-to),*/
+      /*  0 0 1px;*/
+      /*}*/
+      /*90% {*/
+      /*  text-shadow: 3.443339761481782px 0 1px var(--palette-shadow-from),*/
+      /*  -3.443339761481782px 0 1px var(--palette-shadow-to),*/
+      /*  0 0 1px;*/
+      /*}*/
+      /*95% {*/
+      /*  text-shadow: 2.1841838852799786px 0 1px var(--palette-shadow-from),*/
+      /*  -2.1841838852799786px 0 1px var(--palette-shadow-to),*/
+      /*  0 0 1px;*/
+      /*}*/
+      /*100% {*/
+      /*  text-shadow: 2.6208764473832513px 0 1px var(--palette-shadow-from),*/
+      /*  -2.6208764473832513px 0 1px var(--palette-shadow-to),*/
+      /*  0 0 1px;*/
+      /*}*/
+    }
+
+    @keyframes glow {
+      0% {
+        box-shadow: 0 0 -10px var(--font-color);
+      }
+      50% {
+        box-shadow: 0 0 10px var(--font-color);
+      }
+      100% {
+        box-shadow: 0 0 -10px var(--font-color);
+      }
+    }
+
+    @keyframes scanline {
+      0% {
+        bottom: 100%;
+      }
+      80% {
+        bottom: 100%;
+      }
+      100% {
+        bottom: -20%;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    body {
+      background: var(--palette-10);
+      background-image: radial-gradient(
+              at 80% bottom,
+              var(--palette-10) 0%,
+              var(--palette-00) 90%
+      );
+      background-position: 66% 66%;
+      animation: on 2s linear;
+      transition: all 0.5s;
+      min-height: 100vh;
+      padding: var(--space);
+      overflow-x: hidden;
+    }
+
+
+    body:after {
+      content: " ";
+      opacity: 0;
+      background: #fff;
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body:before {
+      content: " ";
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background: linear-gradient(
+              to bottom,
+              rgba(18, 16, 16, 0.1) 50%,
+              rgba(0, 0, 0, 0.25) 50%
+      );
+      background-size: 100% 8px;
+      z-index: -1;
+      pointer-events: none;
+      animation: fadeIn 2s;
+    }
+    .term {
+      position: relative;
+      animation: textShadow 10s infinite;
+    }
+
+    .scanline {
+      width: 100%;
+      height: 100px;
+      z-index: 8;
+      background: linear-gradient(
+              0deg,
+              rgba(0, 0, 0, 0) 0%,
+              rgba(255, 255, 255, 0.2) 10%,
+              rgba(0, 0, 0, 0.1) 100%
+      );
+      opacity: 0.1;
+      position: absolute;
+      bottom: 100%;
+      pointer-events: none;
+      animation: scanline 10s linear infinite;
+    }
+
+
+  </style>
+</body>
+</html>
